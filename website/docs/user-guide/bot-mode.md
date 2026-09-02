@@ -37,6 +37,8 @@ Sections are folders you make yourself — **Clients**, **Team**, whatever fits 
 
 Membership is stored in each Bot's profile metadata (`ui_meta`), so a Bot's section follows it to every desktop connected to that backend. When the roster shows more than one gateway, sections nest inside each gateway's bucket.
 
+Prefer one list across gateways? Open the roster's filter menu and untick **Group by gateway**. The gateway headings go away, your sections span the whole fleet, and each row gets a small gateway chip so you can still tell where a Bot runs. The choice is remembered per desktop and never hides a row, so it does not count as a filter.
+
 ## Creating a Bot
 
 Hit **New Agent** in the roster. The quick path is three fields — **Name**, **Title**, **Description** — and the Bot exists in seconds, introducing itself as the first message of its new Bot Chat.

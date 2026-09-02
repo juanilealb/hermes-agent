@@ -60,6 +60,9 @@ type BotsMessages = {
     botsAndGroups: string
     botsOnly: string
     groupsOnly: string
+    /** View toggle in the filter menu: one foldable section per gateway (on)
+     *  or one flat list with a gateway chip on each row (off). */
+    groupByGateway: string
     /** The activity filter's four options, in menu order. */
     anyActivity: string
     activeNow: string
@@ -290,6 +293,7 @@ const en: BotsMessages = {
     botsAndGroups: 'Bots and group chats',
     botsOnly: 'Bots only',
     groupsOnly: 'Group chats only',
+    groupByGateway: 'Group by gateway',
     anyActivity: 'Any activity',
     activeNow: 'Active now',
     recentlyActive: 'Recently active',
@@ -508,6 +512,7 @@ const ja: BotsMessages = {
     botsAndGroups: 'ボットとグループチャット',
     botsOnly: 'ボットのみ',
     groupsOnly: 'グループチャットのみ',
+    groupByGateway: 'ゲートウェイごとにグループ化',
     anyActivity: 'すべてのアクティビティ',
     activeNow: '現在アクティブ',
     recentlyActive: '最近アクティブ',
@@ -540,7 +545,9 @@ const ja: BotsMessages = {
     newSectionEllipsis: '新しいセクション…',
     removeFromSection: 'セクションから外す',
     deleted: (name, count) =>
-      count === 0 ? `「${name}」を削除しました` : `「${name}」を削除しました — ${count} 件のボットを未分類に移動しました`,
+      count === 0
+        ? `「${name}」を削除しました`
+        : `「${name}」を削除しました — ${count} 件のボットを未分類に移動しました`,
     undo: '元に戻す'
   },
   bot: {
@@ -723,6 +730,7 @@ const zh: BotsMessages = {
     botsAndGroups: '机器人和群聊',
     botsOnly: '仅机器人',
     groupsOnly: '仅群聊',
+    groupByGateway: '按网关分组',
     anyActivity: '任何活动',
     activeNow: '正在活动',
     recentlyActive: '最近活跃',
@@ -753,8 +761,7 @@ const zh: BotsMessages = {
     moveTo: '移动到分区',
     newSectionEllipsis: '新建分区…',
     removeFromSection: '移出分区',
-    deleted: (name, count) =>
-      count === 0 ? `已删除“${name}”` : `已删除“${name}” — ${count} 个机器人已移至未分类`,
+    deleted: (name, count) => (count === 0 ? `已删除“${name}”` : `已删除“${name}” — ${count} 个机器人已移至未分类`),
     undo: '撤销'
   },
   bot: {
@@ -937,6 +944,7 @@ const zhHant: BotsMessages = {
     botsAndGroups: '機器人和群組聊天',
     botsOnly: '僅機器人',
     groupsOnly: '僅群組聊天',
+    groupByGateway: '依閘道器分組',
     anyActivity: '任何活動',
     activeNow: '目前活躍',
     recentlyActive: '最近活躍',
@@ -967,8 +975,7 @@ const zhHant: BotsMessages = {
     moveTo: '移動到分區',
     newSectionEllipsis: '新增分區…',
     removeFromSection: '移出分區',
-    deleted: (name, count) =>
-      count === 0 ? `已刪除「${name}」` : `已刪除「${name}」— ${count} 個機器人已移至未分類`,
+    deleted: (name, count) => (count === 0 ? `已刪除「${name}」` : `已刪除「${name}」— ${count} 個機器人已移至未分類`),
     undo: '復原'
   },
   bot: {

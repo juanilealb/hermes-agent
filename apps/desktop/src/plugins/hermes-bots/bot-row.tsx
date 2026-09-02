@@ -7,6 +7,7 @@
  */
 
 import {
+  Badge,
   cn,
   coarseElapsed,
   Codicon,
@@ -62,6 +63,7 @@ import { useBots } from './i18n'
 import { displayName, stripPreviewMarkdown } from './labels'
 import { duplicateBot } from './profile-ops'
 import { openRosterBot } from './roster-actions'
+import { GatewayKindGlyph } from './roster-sections'
 import { botRosterMeta, botWorkspaceOwnerKey, setBotsWorkspaceOwner } from './routing'
 import { A2A_PREFIX_RE, botCanonicalSessionId, botRowOwnsWorkspace, previewKind, workerActiveAt } from './row-helpers'
 import type { GroupMember, RosterRow, SidebarRowLabels } from './types'
@@ -87,10 +89,14 @@ interface BotRowProps {
   onGroup: (bot: RosterRow) => void
   /** Opens the New section dialog; the bot is filed into it on create. */
   onNewSection: (bot: RosterRow) => void
+  /** Label the row with its gateway. The pane asks for it when the roster is
+   *  a flat multi-gateway list, where no section heading says which gateway
+   *  a bot belongs to. */
+  showGateway?: boolean
   showHandle?: boolean
 }
 
-export function BotRow({ bot, onDelete, onEdit, onGroup, onNewSection, showHandle }: BotRowProps) {
+export function BotRow({ bot, onDelete, onEdit, onGroup, onNewSection, showGateway, showHandle }: BotRowProps) {
   const { t } = useI18n()
   const b = useBots()
   const activeProfile = useValue(host.state.profile)
@@ -180,7 +186,8 @@ export function BotRow({ bot, onDelete, onEdit, onGroup, onNewSection, showHandl
 
   const handle = botHandle(bot.name, bot)
   const gatewayLabel = bot.connectionLabel || (bot.connectionId === 'local' ? 'This device' : '')
-  const showDetailsRow = Boolean(showHandle || displayPreview || fromBot)
+  const gatewayChip = showGateway ? gatewayLabel || String(bot.connectionId || '') : ''
+  const showDetailsRow = Boolean(gatewayChip || showHandle || displayPreview || fromBot)
 
   const rowTooltip = [displayName(bot, meta), `@${handle}`, gatewayLabel, sourceStatus.label]
     .filter(Boolean)
@@ -293,6 +300,19 @@ export function BotRow({ bot, onDelete, onEdit, onGroup, onNewSection, showHandl
         </div>
         {showDetailsRow ? (
           <div className="flex min-w-0 items-center gap-1.5 text-xs text-(--ui-text-tertiary)">
+            {gatewayChip ? (
+              // Amber when the gateway is unreachable, same as its section
+              // heading and picker entry; the status text stays for readers.
+              <Badge
+                className="max-w-[45%] shrink-0 gap-1 font-normal"
+                size="xs"
+                variant={sourceStatus.available ? 'muted' : 'warn'}
+              >
+                <GatewayKindGlyph className="size-2.5" kind={bot.connectionKind} />
+                <span className="min-w-0 truncate">{gatewayChip}</span>
+                {sourceStatus.available ? null : <span className="sr-only">{sourceStatus.label}</span>}
+              </Badge>
+            ) : null}
             {showHandle ? (
               <span className="shrink-0 font-mono text-[0.6875rem] text-(--ui-text-quaternary)">{`@${handle}`}</span>
             ) : null}
@@ -310,9 +330,7 @@ export function BotRow({ bot, onDelete, onEdit, onGroup, onNewSection, showHandl
     <ContextMenu>
       <ContextMenuTrigger asChild>{row}</ContextMenuTrigger>
       <ContextMenuContent>
-        <ContextMenuItem onSelect={() => void openRosterBot(bot)}>
-          {b.bot.openBotChat}
-        </ContextMenuItem>
+        <ContextMenuItem onSelect={() => void openRosterBot(bot)}>{b.bot.openBotChat}</ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem
           onSelect={() => {
